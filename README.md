@@ -10,3 +10,8 @@ added base code:
 --collision
 --coins
   -coin bouncing
+  -coin timer
+--scoring
+  -coins: +10
+  -death: -5
+  
