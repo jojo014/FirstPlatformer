@@ -2,10 +2,14 @@ package main;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL15.*;
 
 public class Game {
 
@@ -30,7 +34,7 @@ public class Game {
 			drawScene();
 			player.draw();
 			enemy.draw();
-			for (Coin c : coins){
+			for (Coin c : coins) {
 				c.draw();
 			}
 			removeCoins();
@@ -43,11 +47,11 @@ public class Game {
 	}
 
 	private static void removeCoins() {
-		for(Coin c: removedCoins){
+		for (Coin c : removedCoins) {
 			coins.remove(c);
-			//removedCoins.remove(c);
+			// removedCoins.remove(c);
 		}
-		
+
 	}
 
 	private static void drawScene() {
@@ -72,6 +76,27 @@ public class Game {
 			glVertex2d(0, 32);
 		}
 		glEnd();
+	}
+
+	// Create the handle for the VBO
+	public static int vertexBufferObject = glGenBuffers();
+	
+	public static void VBO() {
+		// Create a new FloatBuffer (complex array of floats) with the capacity
+		// of the length of the points * 3 (because we have 3 vertices per
+		// point)
+		FloatBuffer vertexArray = BufferUtils.createFloatBuffer(4);
+		// Iterate over all the points and store them in the FloatBuffer
+		vertexArray.put(new float[] { (float) player.x, (float) player.y, (float) (player.x + player.w), (float) (player.y + player.h) });
+		// Make the buffer read-able for OpenGL
+		vertexArray.flip();
+
+		// Bind the VBO for usage (in this case: storing information)
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+		// Store all the contents of the FloatBuffer in the VBO.
+		glBufferData(GL_ARRAY_BUFFER, vertexArray, GL_STATIC_DRAW);
+		// Un-bind the VBO
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	private static void setCamera() {

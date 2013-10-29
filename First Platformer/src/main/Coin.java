@@ -4,13 +4,14 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Coin {
 
-	public double x, y, xs, ys;
+	public double x, y, w, h, xs, ys;
 	public int timer;
 	public boolean stop;
 
 	public Coin(double x2, double y2) {
 		x = x2;
 		y = y2;
+		w = h = 8;
 		xs = (Math.random() * 2 - 1) * 5;
 		ys = 3 + Math.random() * 4;
 	}
@@ -32,7 +33,7 @@ public class Coin {
 			ys -= .4;
 		}
 
-		if (timer < 60) return;
+		if (timer < 5) return;
 		else
 			stop = true;
 
@@ -53,10 +54,10 @@ public class Coin {
 		glBegin(GL_QUADS);
 		{
 			glColor3d(1, 1, 0);
-			glVertex2d(-4, 0);
-			glVertex2d(4, 0);
-			glVertex2d(4, 8);
-			glVertex2d(-4, 8);
+			glVertex2d(-w/2, 0);
+			glVertex2d(w/2, 0);
+			glVertex2d(w/2, h);
+			glVertex2d(-w/2, h);
 		}
 		glEnd();
 

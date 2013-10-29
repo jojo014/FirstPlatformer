@@ -4,17 +4,19 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Enemy {
 
-	public double x, y, xs;
+	public double x, y, w, h, xs;
 
 	public Enemy() {
 		x = 200;
 		y = 32;
-		 xs = 2;
+		w = h = 16;
+		xs = 2;
 	}
 
 	private void logic() {
 		x += xs;
-		if (x > 650) x = -10;
+		if (x > 650)
+			x = -10;
 
 	}
 
@@ -29,10 +31,10 @@ public class Enemy {
 		{
 			glColor3d(0.7, 0, 0);
 
-			glVertex2d(-8, 0);
-			glVertex2d(8, 0);
-			glVertex2d(8, 16);
-			glVertex2d(-8, 16);
+			glVertex2d(-w/2, 0);
+			glVertex2d(w/2, 0);
+			glVertex2d(w/2, h);
+			glVertex2d(-w/2, h);
 		}
 		glEnd();
 
