@@ -2,6 +2,9 @@ package main;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.nio.FloatBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 
 public class Player {
@@ -9,12 +12,24 @@ public class Player {
 	public double x, y, w, h, xs, ys;
 	public boolean jumpPressed, jumpWasPressed, dead;
 	public int jumpsLeft, score = 0;
+	
+	FloatBuffer fbV;
+
+	public VBO player;
 
 	public Player() {
 		x = 100;
 		y = 66;
-		w = h = 16;
+		h = 16;
+		w = h / 2;
 		ys = -2;
+		fbV = BufferUtils.createFloatBuffer(4 * 2);
+		fbV.put(new float[] {(float) -w, 0f, (float) w, 0f, (float) w, (float) h, (float) -w, (float) h});
+		fbV.flip();
+		FloatBuffer fbC = BufferUtils.createFloatBuffer(4 * 4);
+		fbC.put(new float[] {1f, 0f, 0f, 1f, 0f, 1f, 0f, 1f, 0f, 0f, 1f, 1f, 1f, 1f, 0f, 1f});
+		fbC.flip();
+		player = new VBO(fbV, fbC,4);
 	}
 
 	public void update() {
@@ -24,6 +39,9 @@ public class Player {
 		if (x < -10) x = 650;
 		ys -= .4;
 
+//		fbV.clear();
+//		fbV.put
+//		
 		if (dead) {
 			if (y < -800) {
 				dead = false;
@@ -69,23 +87,25 @@ public class Player {
 	public void draw() {
 		glLoadIdentity();
 		glPushMatrix();
-		glTranslated(x, y, 0);
-
-		glBegin(GL_QUADS);
-		{
-			glColor3d(1, 0, 0);
-			glVertex2d(-w / 2, 0);
-
-			glColor3d(0, 1, 0);
-			glVertex2d(w / 2, 0);
-
-			glColor3d(0, 0, 1);
-			glVertex2d(w / 2, h);
-
-			glColor3d(1, 1, 0);
-			glVertex2d(-w / 2, h);
-		}
-		glEnd();
+		//glTranslated(x, y, 0);
+//
+//		glBegin(GL_QUADS);
+//		{
+//			glColor3d(1, 0, 0);
+//			glVertex2d(-w / 2, 0);
+//
+//			glColor3d(0, 1, 0);
+//			glVertex2d(w / 2, 0);
+//
+//			glColor3d(0, 0, 1);
+//			glVertex2d(w / 2, h);
+//
+//			glColor3d(1, 1, 0);
+//			glVertex2d(-w / 2, h);
+//		}
+//		glEnd();
+		
+		player.render(x, y);
 
 		glPopMatrix();
 	}

@@ -11,33 +11,50 @@ import org.lwjgl.BufferUtils;
 
 public class VBO {
 
-	static int VBOid, colorBufferID, indexBufferID, numberIndices;
+	static int VBOid, colorBufferID, indexBufferID, numberOfIndices;
 
-	public VBO(FloatBuffer buffer, int numIndicies) {
+	public VBO(FloatBuffer bufferV, FloatBuffer bufferC, int numIndicies) {
 		VBOid = createVBOID();
-		vertexBufferData(VBOid, buffer);
-		numberIndices = numIndicies;
-
+		vertexBufferData(VBOid, bufferV);
+		colorBufferID = createVBOID();
+		vertexBufferData(colorBufferID, bufferC);
+		numberOfIndices = numIndicies;
 	}
 
-	public void render() {
+	public void reBuffer(FloatBuffer bufferV) {
+		vertexBufferData(VBOid, bufferV);
+	}
+
+	public void render(double x, double y) {
+		glPushMatrix();
+		glLoadIdentity();
+		glTranslated(x, y, 0);
+
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, VBOid);
-		glVertexPointer(3, GL_FLOAT, 0, 0);
+		glVertexPointer(numberOfIndices, GL_FLOAT, 0, 0);
 
 		glEnableClientState(GL_COLOR_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
 		glColorPointer(4, GL_FLOAT, 0, 0);
 
 		// If you are not using IBOs:
-		glDrawArrays(GL_QUADS, 0, numberIndices);
+		glDrawArrays(GL_QUADS, 0, numberOfIndices);
 
 		// If you are using IBOs:
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-		//glDrawElements(GL_TRIANGLES, numberIndices, GL_UNSIGNED_INT, 0);
+		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
+		
+
+		// glDrawElements(GL_TRIANGLES, numberIndices, GL_UNSIGNED_INT, 0);
 
 		// The alternate glDrawElements.
-		//GL12.glDrawRangeElements(GL_TRIANGLES, 0, maxIndex, numberIndices, GL_UNSIGNED_INT, 0);
+		// GL12.glDrawRangeElements(GL_TRIANGLES, 0, maxIndex, numberIndices,
+		// GL_UNSIGNED_INT, 0);
+
+		glDisableClientState(GL_COLOR_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
+
+		glPopMatrix();
 	}
 
 	public static int createVBOID() {
