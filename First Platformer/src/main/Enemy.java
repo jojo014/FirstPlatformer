@@ -13,7 +13,7 @@ public class Enemy {
 		xs = 2;
 	}
 
-	private void logic() {
+	public void update() {
 		x += xs;
 		if (x > 650)
 			x = -10;
@@ -21,8 +21,6 @@ public class Enemy {
 	}
 
 	public void draw() {
-		logic();
-
 		glLoadIdentity();
 		glPushMatrix();
 		glTranslated(x, y, 0);

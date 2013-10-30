@@ -16,7 +16,7 @@ public class Coin {
 		ys = 3 + Math.random() * 4;
 	}
 
-	private void logic() {
+	public void update() {
 		if (!stop) timer++;
 		x += xs;
 		y += ys;
@@ -45,8 +45,6 @@ public class Coin {
 	}
 
 	public void draw() {
-		logic();
-
 		glLoadIdentity();
 		glPushMatrix();
 		glTranslated(x, y, 0);
@@ -54,10 +52,10 @@ public class Coin {
 		glBegin(GL_QUADS);
 		{
 			glColor3d(1, 1, 0);
-			glVertex2d(-w/2, 0);
-			glVertex2d(w/2, 0);
-			glVertex2d(w/2, h);
-			glVertex2d(-w/2, h);
+			glVertex2d(-w / 2, 0);
+			glVertex2d(w / 2, 0);
+			glVertex2d(w / 2, h);
+			glVertex2d(-w / 2, h);
 		}
 		glEnd();
 

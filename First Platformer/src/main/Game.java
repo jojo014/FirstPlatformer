@@ -2,14 +2,11 @@ package main;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-import org.lwjgl.BufferUtils;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import static org.lwjgl.opengl.GL15.*;
 
 public class Game {
 
@@ -19,31 +16,63 @@ public class Game {
 	public static ArrayList<Coin> coins;
 	public static ArrayList<Coin> removedCoins;
 
-	public static void main(String[] args) throws Exception {
-		Display.setDisplayMode(new DisplayMode(640, 480));
-		Display.create();
+	private static long lastFrame, lastFPS;
+	private static int fps, ups;
 
-		player = new Player();
-		enemy = new Enemy();
-		coins = new ArrayList<Coin>(0);
-		removedCoins = new ArrayList<Coin>(0);
+	public static void loop() {
+		lastFPS = getTime();
+		getDelta();
+
+		long lastTime = System.nanoTime();
+		final double ns = 1000000000.0 / 60.0;
+		double delta = 0;
 
 		while (!Display.isCloseRequested()) {
 
-			setCamera();
-			drawScene();
-			player.draw();
-			enemy.draw();
-			for (Coin c : coins) {
-				c.draw();
+			long now = System.nanoTime();
+			delta += (now - lastTime) / ns;
+			lastTime = now;
+
+			while (delta >= 1) {
+				update();
+				ups++;
+				delta--;
 			}
-			removeCoins();
+
+			render();
+			updateFPS();
 
 			Display.update();
 			Display.sync(60);
 		}
 
-		Display.destroy();
+		cleanUp();
+	}
+
+	public static void init() {
+		player = new Player();
+		enemy = new Enemy();
+		coins = new ArrayList<Coin>(0);
+		removedCoins = new ArrayList<Coin>(0);
+	}
+
+	private static void render() {
+		setCamera();
+		drawScene();
+		player.draw();
+		enemy.draw();
+		for (Coin c : coins) {
+			c.draw();
+		}
+	}
+
+	private static void update() {
+		player.update();
+		enemy.update();
+		for (Coin c : coins) {
+			c.update();
+		}
+		removeCoins();
 	}
 
 	private static void removeCoins() {
@@ -78,27 +107,6 @@ public class Game {
 		glEnd();
 	}
 
-	// Create the handle for the VBO
-	public static int vertexBufferObject = glGenBuffers();
-	
-	public static void VBO() {
-		// Create a new FloatBuffer (complex array of floats) with the capacity
-		// of the length of the points * 3 (because we have 3 vertices per
-		// point)
-		FloatBuffer vertexArray = BufferUtils.createFloatBuffer(4);
-		// Iterate over all the points and store them in the FloatBuffer
-		vertexArray.put(new float[] { (float) player.x, (float) player.y, (float) (player.x + player.w), (float) (player.y + player.h) });
-		// Make the buffer read-able for OpenGL
-		vertexArray.flip();
-
-		// Bind the VBO for usage (in this case: storing information)
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-		// Store all the contents of the FloatBuffer in the VBO.
-		glBufferData(GL_ARRAY_BUFFER, vertexArray, GL_STATIC_DRAW);
-		// Un-bind the VBO
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
 	private static void setCamera() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glMatrixMode(GL_PROJECTION);
@@ -107,6 +115,55 @@ public class Game {
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+	}
+
+	/**
+	 * Calculate how many milliseconds have passed since last frame.
+	 * 
+	 * @return milliseconds passed since last frame
+	 */
+	public static int getDelta() {
+		long time = getTime();
+		int delta = (int) (time - lastFrame);
+		lastFrame = time;
+
+		return delta;
+	}
+
+	/**
+	 * Get the accurate system time
+	 * 
+	 * @return The system time in milliseconds
+	 */
+	public static long getTime() {
+		return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+	}
+
+	/**
+	 * Calculate the FPS and set it in the title bar
+	 */
+	public static void updateFPS() {
+		if (getTime() - lastFPS > 1000) {
+			Display.setTitle("FPS: " + fps + " || UPS: " + ups);
+			fps = 0;
+			ups = 0;
+			lastFPS += 1000;
+		}
+		fps++;
+	}
+
+	public static void cleanUp() {
+		Display.destroy();
+	}
+	
+
+	public static void main(String[] args) throws Exception {
+		Display.setDisplayMode(new DisplayMode(640, 480));
+		Display.create();
+
+		init();
+		loop();
+
 	}
 
 }

@@ -14,4 +14,9 @@ added base code:
 --scoring
   -coins: +10
   -death: -5
-  
+
+added other code:
+--timing
+  -set to 60 ups
+  -took off fps cap
+--took away VBO methods. ill mess with this later
