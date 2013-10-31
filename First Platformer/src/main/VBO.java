@@ -11,18 +11,18 @@ import org.lwjgl.BufferUtils;
 
 public class VBO {
 
-	static int VBOid, colorBufferID, indexBufferID, numberOfIndices;
+	static int VBOid, colorBufferID, indexBufferID, vertexSize;
 
-	public VBO(FloatBuffer bufferV, FloatBuffer bufferC, int numIndicies) {
+	public VBO(FloatBuffer bufferV, FloatBuffer bufferC, int vSize) {
 		VBOid = createVBOID();
-		vertexBufferData(VBOid, bufferV);
+		vertexSize = vSize;
+		dynamicBufferData(VBOid, bufferV);
 		colorBufferID = createVBOID();
-		vertexBufferData(colorBufferID, bufferC);
-		numberOfIndices = numIndicies;
+		staticBufferData(colorBufferID, bufferC);
 	}
 
 	public void reBuffer(FloatBuffer bufferV) {
-		vertexBufferData(VBOid, bufferV);
+		dynamicBufferData(VBOid, bufferV);
 	}
 
 	public void render(double x, double y) {
@@ -30,29 +30,28 @@ public class VBO {
 		glLoadIdentity();
 		glTranslated(x, y, 0);
 
-		glEnableClientState(GL_VERTEX_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, VBOid);
-		glVertexPointer(numberOfIndices, GL_FLOAT, 0, 0);
+		glVertexPointer(vertexSize, GL_FLOAT, 0, 0);
 
-		glEnableClientState(GL_COLOR_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
-		glColorPointer(4, GL_FLOAT, 0, 0);
+		glColorPointer(3, GL_FLOAT, 0, 0);
 
-		// If you are not using IBOs:
-		glDrawArrays(GL_QUADS, 0, numberOfIndices);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_COLOR_ARRAY);
+
+		glDrawArrays(GL_QUADS, 0, vertexSize); // If you are not using IBOs
+
+		glDisableClientState(GL_COLOR_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
 
 		// If you are using IBOs:
 		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-		
 
 		// glDrawElements(GL_TRIANGLES, numberIndices, GL_UNSIGNED_INT, 0);
 
 		// The alternate glDrawElements.
 		// GL12.glDrawRangeElements(GL_TRIANGLES, 0, maxIndex, numberIndices,
 		// GL_UNSIGNED_INT, 0);
-
-		glDisableClientState(GL_COLOR_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
 
 		glPopMatrix();
 	}
@@ -63,14 +62,15 @@ public class VBO {
 		return buffer.get(0);
 	}
 
-	public static void vertexBufferData(int id, FloatBuffer buffer) {
+	public static void dynamicBufferData(int id, FloatBuffer buffer) {
 		glBindBuffer(GL_ARRAY_BUFFER, id);
 		glBufferData(GL_ARRAY_BUFFER, buffer, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	public static void indexBufferData(int id, IntBuffer buffer) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_DYNAMIC_DRAW);
+	public static void staticBufferData(int id, FloatBuffer buffer) {
+		glBindBuffer(GL_ARRAY_BUFFER, id);
+		glBufferData(GL_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
-
 }
