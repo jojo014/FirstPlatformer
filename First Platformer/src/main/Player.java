@@ -15,7 +15,7 @@ public class Player {
 
 	FloatBuffer fbV, fbC;
 
-	public VBO player;
+	public VBO vbo;
 
 	public Player() {
 		x = 100;
@@ -23,22 +23,25 @@ public class Player {
 		h = 16;
 		w = h / 2;
 		ys = -2;
-		fbV = BufferUtils.createFloatBuffer(4 * 2);
-		fbV.put(new float[] { (float) -w, 0f, (float) w, 0f, (float) w, (float) h, (float) -w, (float) h });
+
+		fbV = BufferUtils.createFloatBuffer(4 * 3);
+		fbV.put(new float[] { (float) -w, 0f, 0f, (float) w, 0f, 0f, (float) w, (float) h, 0f, (float) -w, (float) h, 0f });
 		fbV.flip();
 
-		fbC = BufferUtils.createFloatBuffer(4 * 3);
-		fbC.put(new float[] { 1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f, 1f, 1f, 0f });
-
+		fbC = BufferUtils.createFloatBuffer(4 * 4);
+		fbC.put(new float[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0 });
 		fbC.flip();
-		player = new VBO(fbV, fbC, 4);
+
+		vbo = new VBO(fbV, fbC, 4);
 	}
 
 	public void update() {
 		x += xs;
 		y += ys;
-		if (x > 650) x = -10;
-		if (x < -10) x = 650;
+		if (x > 650)
+			x = -10;
+		if (x < -10)
+			x = 650;
 		ys -= .4;
 
 		if (dead) {
@@ -53,21 +56,27 @@ public class Player {
 			y = 32;
 			jumpsLeft = 2;
 
-			if (!Keyboard.isKeyDown(Keyboard.KEY_LEFT) && xs < 0) xs = xs * 0.9;
-			if (!Keyboard.isKeyDown(Keyboard.KEY_RIGHT) && xs > 0) xs = xs * 0.9;
+			if (!Keyboard.isKeyDown(Keyboard.KEY_LEFT) && xs < 0)
+				xs = xs * 0.9;
+			if (!Keyboard.isKeyDown(Keyboard.KEY_RIGHT) && xs > 0)
+				xs = xs * 0.9;
 		}
 
-		if (jumpPressed && !jumpWasPressed && jumpsLeft-- > 0) ys = 7;
+		if (jumpPressed && !jumpWasPressed && jumpsLeft-- > 0)
+			ys = 7;
 
-		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) xs = Math.max(-3, xs - 1);
-		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) xs = Math.min(3, xs + 1);
+		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
+			xs = Math.max(-3, xs - 1);
+		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+			xs = Math.min(3, xs + 1);
 
 		jumpWasPressed = jumpPressed;
 		jumpPressed = Keyboard.isKeyDown(Keyboard.KEY_UP);
 
 		// Collision detection
 
-		if (Math.abs(x - Game.enemy.x) > 16 || Math.abs(y - Game.enemy.y) > 16) return;
+		if (Math.abs(x - Game.enemy.x) > 16 || Math.abs(y - Game.enemy.y) > 16)
+			return;
 		if (ys < 0) {
 			Game.enemy.kill();
 		} else {
@@ -84,8 +93,8 @@ public class Player {
 	}
 
 	public void draw() {
-		glLoadIdentity();
-		glPushMatrix();
+		// glLoadIdentity();
+		// glPushMatrix();
 		// glTranslated(x, y, 0);
 		//
 		// glBegin(GL_QUADS);
@@ -104,9 +113,9 @@ public class Player {
 		// }
 		// glEnd();
 
-		player.render(x, y);
+		vbo.render(x, y);
 
-		glPopMatrix();
+		// glPopMatrix();
 	}
 
 }

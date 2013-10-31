@@ -2,7 +2,6 @@ package main;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-//import static org.lwjgl.opengl.GL12.*;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -12,46 +11,44 @@ import org.lwjgl.BufferUtils;
 public class VBO {
 
 	static int VBOid, colorBufferID, indexBufferID, vertexSize;
+	final static int amountOfVertices = 4;
+	// final static int vertexSize = 3;
+	final static int colorSize = 3;
 
 	public VBO(FloatBuffer bufferV, FloatBuffer bufferC, int vSize) {
-		VBOid = createVBOID();
-		vertexSize = vSize;
-		dynamicBufferData(VBOid, bufferV);
-		colorBufferID = createVBOID();
-		staticBufferData(colorBufferID, bufferC);
-	}
+		// VBOid = createVBOID();
+		// vertexSize = vSize;
+		// staticBufferData(VBOid, bufferV);
+		// colorBufferID = createVBOID();
+		// staticBufferData(colorBufferID, bufferC);
 
-	public void reBuffer(FloatBuffer bufferV) {
-		dynamicBufferData(VBOid, bufferV);
+		VBOid = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, VBOid);
+		glBufferData(GL_ARRAY_BUFFER, bufferV, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		colorBufferID = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
+		glBufferData(GL_ARRAY_BUFFER, bufferC, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	public void render(double x, double y) {
-		glPushMatrix();
 		glLoadIdentity();
+		glPushMatrix();
 		glTranslated(x, y, 0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBOid);
-		glVertexPointer(vertexSize, GL_FLOAT, 0, 0);
+		glVertexPointer(vertexSize, GL_FLOAT, 0, 0L);
 
 		glBindBuffer(GL_ARRAY_BUFFER, colorBufferID);
-		glColorPointer(3, GL_FLOAT, 0, 0);
+		glColorPointer(4, GL_FLOAT, 0, 0L);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
-
-		glDrawArrays(GL_QUADS, 0, vertexSize); // If you are not using IBOs
-
+		glDrawArrays(GL_QUADS, 0, vertexSize);
 		glDisableClientState(GL_COLOR_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
-
-		// If you are using IBOs:
-		// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferID);
-
-		// glDrawElements(GL_TRIANGLES, numberIndices, GL_UNSIGNED_INT, 0);
-
-		// The alternate glDrawElements.
-		// GL12.glDrawRangeElements(GL_TRIANGLES, 0, maxIndex, numberIndices,
-		// GL_UNSIGNED_INT, 0);
 
 		glPopMatrix();
 	}
