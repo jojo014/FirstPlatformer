@@ -1,6 +1,6 @@
 package main;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
 
 import java.nio.FloatBuffer;
 
@@ -17,6 +17,9 @@ public class Player {
 
 	public VBO vbo;
 
+	int vboVertexHandle = glGenBuffers();
+	int vboColorHandle = glGenBuffers();
+
 	public Player() {
 		x = 100;
 		y = 66;
@@ -24,15 +27,15 @@ public class Player {
 		w = h / 2;
 		ys = -2;
 
-		fbV = BufferUtils.createFloatBuffer(4 * 3);
-		fbV.put(new float[] { (float) -w, 0f, 0f, (float) w, 0f, 0f, (float) w, (float) h, 0f, (float) -w, (float) h, 0f });
+		fbV = BufferUtils.createFloatBuffer(4 * 2);
+		fbV.put(new float[] { -8f, 0f, 8f, 0f, 8f, 16f, -8f, 16f });
 		fbV.flip();
 
-		fbC = BufferUtils.createFloatBuffer(4 * 4);
-		fbC.put(new float[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0 });
+		fbC = BufferUtils.createFloatBuffer(4 * 3);
+		fbC.put(new float[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0 });
 		fbC.flip();
 
-		vbo = new VBO(fbV, fbC, 4);
+		VBO.setUp(fbV, vboVertexHandle, fbC, vboColorHandle);
 	}
 
 	public void update() {
@@ -93,29 +96,7 @@ public class Player {
 	}
 
 	public void draw() {
-		// glLoadIdentity();
-		// glPushMatrix();
-		// glTranslated(x, y, 0);
-		//
-		// glBegin(GL_QUADS);
-		// {
-		// glColor3d(1, 0, 0);
-		// glVertex2d(-w / 2, 0);
-		//
-		// glColor3d(0, 1, 0);
-		// glVertex2d(w / 2, 0);
-		//
-		// glColor3d(0, 0, 1);
-		// glVertex2d(w / 2, h);
-		//
-		// glColor3d(1, 1, 0);
-		// glVertex2d(-w / 2, h);
-		// }
-		// glEnd();
-
-		vbo.render(x, y);
-
-		// glPopMatrix();
+		VBO.render(vboVertexHandle, vboColorHandle, x, y);
 	}
 
 }

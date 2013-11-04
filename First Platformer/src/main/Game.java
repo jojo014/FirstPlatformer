@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 
+import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -157,9 +158,14 @@ public class Game {
 	}
 	
 
-	public static void main(String[] args) throws Exception {
-		Display.setDisplayMode(new DisplayMode(640, 480));
-		Display.create();
+	public static void main(String[] args) {
+		try {
+			Display.setDisplayMode(new DisplayMode(640, 480));
+			Display.create();
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+			System.err.println("Failed to init display");
+		}
 
 		init();
 		loop();
