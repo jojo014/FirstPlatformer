@@ -1,12 +1,32 @@
 package main;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glColor3d;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glTranslated;
+import static org.lwjgl.opengl.GL11.glVertex2d;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+
+import java.nio.FloatBuffer;
+
+import org.lwjgl.BufferUtils;
 
 public class Coin {
 
 	public double x, y, w, h, xs, ys;
 	public int timer;
 	public boolean stop;
+	
+	private VBO vbo;
+	private int vboVertexHandle = glGenBuffers();
+	private int vboColorHandle = glGenBuffers();
+	private FloatBuffer fbV, fbC;
+	
 
 	public Coin(double x2, double y2) {
 		x = x2;
@@ -14,6 +34,11 @@ public class Coin {
 		w = h = 8;
 		xs = (Math.random() * 2 - 1) * 5;
 		ys = 3 + Math.random() * 4;
+		
+		fbV = BufferUtils.createFloatBuffer(4*2);
+		fbV.put(new float[] {-4, 0, 4, 0, 4, 8, -4, 8});
+		fbV.flip();
+		
 	}
 
 	public void update() {
@@ -60,6 +85,12 @@ public class Coin {
 		glEnd();
 
 		glPopMatrix();
+	}
+	
+	
+	public void exit(){
+		glDeleteBuffers(vboVertexHandle);
+		glDeleteBuffers(vboColorHandle);
 	}
 
 }

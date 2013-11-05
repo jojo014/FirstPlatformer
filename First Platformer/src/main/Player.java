@@ -1,5 +1,6 @@
 package main;
 
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
 
 import java.nio.FloatBuffer;
@@ -13,9 +14,9 @@ public class Player {
 	public boolean jumpPressed, jumpWasPressed, dead;
 	public int jumpsLeft, score = 0;
 
-	FloatBuffer fbV, fbC;
+	private FloatBuffer fbV, fbC;
 
-	public VBO vbo;
+	private VBO vbo;
 
 	int vboVertexHandle = glGenBuffers();
 	int vboColorHandle = glGenBuffers();
@@ -35,7 +36,9 @@ public class Player {
 		fbC.put(new float[] { 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0 });
 		fbC.flip();
 
-		VBO.setUp(fbV, vboVertexHandle, fbC, vboColorHandle);
+		vbo = new VBO();
+		vbo.setUp(fbV, vboVertexHandle, fbC, vboColorHandle);
+		
 	}
 
 	public void update() {
@@ -96,7 +99,12 @@ public class Player {
 	}
 
 	public void draw() {
-		VBO.render(vboVertexHandle, vboColorHandle, x, y);
+		vbo.render(vboVertexHandle, vboColorHandle, x, y);
+	}
+	
+	public void exit(){
+		glDeleteBuffers(vboVertexHandle);
+		glDeleteBuffers(vboColorHandle);
 	}
 
 }

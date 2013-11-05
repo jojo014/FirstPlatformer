@@ -154,6 +154,11 @@ public class Game {
 	}
 
 	public static void cleanUp() {
+		player.exit();
+		enemy.exit();
+		for(Coin c: coins){
+			c.exit();
+		}
 		Display.destroy();
 	}
 	

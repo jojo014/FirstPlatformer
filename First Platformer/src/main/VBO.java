@@ -23,11 +23,11 @@ import java.nio.FloatBuffer;
 
 public class VBO {
 
-	final static int amountOfVertices = 4;
-	final static int vertexSize = 2;
-	final static int colorSize = 3;
-	
-	public static void setUp(FloatBuffer vertexData, int vboVertexHandle, FloatBuffer colorData, int vboColorHandle) {
+	private int amountOfVertices = 4;
+	private int vertexSize = 2;
+	private int colorSize = 3;
+
+	public void setUp(FloatBuffer vertexData, int vboVertexHandle, FloatBuffer colorData, int vboColorHandle) {
 		glBindBuffer(GL_ARRAY_BUFFER, vboVertexHandle);
 		glBufferData(GL_ARRAY_BUFFER, vertexData, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -38,7 +38,7 @@ public class VBO {
 
 	}
 
-	public static void render(int vboVertexHandle, int vboColorHandle, double x, double y) {
+	public void render(int vboVertexHandle, int vboColorHandle, double x, double y) {
 		glLoadIdentity();
 		glPushMatrix();
 		glTranslated(x, y, 0);
@@ -55,5 +55,11 @@ public class VBO {
 		glDisableClientState(GL_VERTEX_ARRAY);
 
 		glPopMatrix();
+	}
+
+	public void reDimInts(int amtOfVert, int vSize, int cSize) {
+		amountOfVertices = amtOfVert;
+		vertexSize = vSize;
+		colorSize = cSize;
 	}
 }
