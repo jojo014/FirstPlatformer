@@ -11,7 +11,7 @@ import org.lwjgl.input.Keyboard;
 public class Player {
 
 	public double x, y, w, h, xs, ys;
-	public boolean jumpPressed, jumpWasPressed, dead;
+	public boolean jumpPressed, jumpWasPressed, dead, standing = false;;
 	public int jumpsLeft, score = 0;
 
 	private FloatBuffer fbV, fbC;
@@ -38,7 +38,7 @@ public class Player {
 
 		vbo = new VBO();
 		vbo.setUp(fbV, vboVertexHandle, fbC, vboColorHandle);
-		
+
 	}
 
 	public void update() {
@@ -57,9 +57,27 @@ public class Player {
 			return;
 		}
 
+		if (ys < 0) { //is moving down
+			for (Platform p : Game.platforms) {
+				System.out.println(x > p.x && x < (p.x + p.w));
+				if (x > p.x && x < (p.x + p.w)) {
+					if (y == p.y || (y < (p.y + p.h) && y > p.y)) {
+						standing = true;
+						y = p.y;
+						break;
+					}
+				}
+			}
+		}
+		
+
 		if (y <= 32) {
-			ys = 0;
+			standing = true;
 			y = 32;
+		}
+
+		if (standing) {
+			ys = 0;
 			jumpsLeft = 2;
 
 			if (!Keyboard.isKeyDown(Keyboard.KEY_LEFT) && xs < 0)
@@ -68,8 +86,10 @@ public class Player {
 				xs = xs * 0.9;
 		}
 
-		if (jumpPressed && !jumpWasPressed && jumpsLeft-- > 0)
+		if (jumpPressed && !jumpWasPressed && jumpsLeft-- > 0) {
 			ys = 7;
+			standing = false;
+		}
 
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
 			xs = Math.max(-3, xs - 1);
@@ -101,8 +121,8 @@ public class Player {
 	public void draw() {
 		vbo.render(vboVertexHandle, vboColorHandle, x, y);
 	}
-	
-	public void exit(){
+
+	public void exit() {
 		glDeleteBuffers(vboVertexHandle);
 		glDeleteBuffers(vboColorHandle);
 	}

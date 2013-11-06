@@ -16,6 +16,7 @@ public class Game {
 
 	public static ArrayList<Coin> coins;
 	public static ArrayList<Coin> removedCoins;
+	public static ArrayList<Platform> platforms;
 
 	private static long lastFrame, lastFPS;
 	private static int fps, ups;
@@ -44,7 +45,7 @@ public class Game {
 			updateFPS();
 
 			Display.update();
-			Display.sync(60);
+			// Display.sync(60);
 		}
 
 		cleanUp();
@@ -55,16 +56,23 @@ public class Game {
 		enemy = new Enemy();
 		coins = new ArrayList<Coin>(0);
 		removedCoins = new ArrayList<Coin>(0);
+		platforms = new ArrayList<Platform>(0);
+		platforms.add(new Platform(200, 100, 100, 10));
 	}
 
 	private static void render() {
 		setCamera();
 		drawScene();
-		player.draw();
 		enemy.draw();
 		for (Coin c : coins) {
 			c.draw();
 		}
+		for (Platform p : platforms) {
+			p.draw();
+		}
+		
+		
+		player.draw();
 	}
 
 	private static void update() {
@@ -79,7 +87,7 @@ public class Game {
 	private static void removeCoins() {
 		for (Coin c : removedCoins) {
 			coins.remove(c);
-			// removedCoins.remove(c);
+			removedCoins.remove(c);
 		}
 
 	}
@@ -156,12 +164,14 @@ public class Game {
 	public static void cleanUp() {
 		player.exit();
 		enemy.exit();
-		for(Coin c: coins){
+		for (Coin c : coins) {
 			c.exit();
+		}
+		for (Platform p : platforms) {
+			p.exit();
 		}
 		Display.destroy();
 	}
-	
 
 	public static void main(String[] args) {
 		try {
