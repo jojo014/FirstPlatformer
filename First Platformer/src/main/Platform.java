@@ -22,7 +22,7 @@ public class Platform {
 		this.h = h;
 		
 		fbV = BufferUtils.createFloatBuffer(4*2);
-		fbV.put(new float[] {(float) x, 0, (float) (x+w), 0, (float) (x+w), (float) h, (float) x, (float) h});
+		fbV.put(new float[] {0, 0, (float) (w), 0, (float) (w), (float) h, (float) 0, (float) h});
 		fbV.flip();
 		
 		fbC = BufferUtils.createFloatBuffer(3*4);

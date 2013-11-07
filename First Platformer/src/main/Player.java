@@ -44,10 +44,10 @@ public class Player {
 	public void update() {
 		x += xs;
 		y += ys;
-		if (x > 650)
-			x = -10;
-		if (x < -10)
-			x = 650;
+//		if (x > 650)
+//			x = -10;
+//		if (x < -10)
+//			x = 650;
 		ys -= .4;
 
 		if (dead) {
@@ -57,19 +57,19 @@ public class Player {
 			return;
 		}
 
-		if (ys < 0) { //is moving down
+		if (ys < 0) { // is moving down
 			for (Platform p : Game.platforms) {
-				System.out.println(x > p.x && x < (p.x + p.w));
 				if (x > p.x && x < (p.x + p.w)) {
-					if (y == p.y || (y < (p.y + p.h) && y > p.y)) {
+					if ((y == p.y) || (y < (p.y + p.h) && y > p.y)) {
 						standing = true;
-						y = p.y;
+						y = p.y + p.h;
 						break;
 					}
+				} else {
+					standing = false;
 				}
 			}
 		}
-		
 
 		if (y <= 32) {
 			standing = true;

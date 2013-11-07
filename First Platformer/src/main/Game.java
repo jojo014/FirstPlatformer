@@ -3,6 +3,7 @@ package main;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -20,6 +21,8 @@ public class Game {
 
 	private static long lastFrame, lastFPS;
 	private static int fps, ups;
+
+	public static int xOff = 0;
 
 	public static void loop() {
 		lastFPS = getTime();
@@ -45,7 +48,7 @@ public class Game {
 			updateFPS();
 
 			Display.update();
-			// Display.sync(60);
+			Display.sync(60);
 		}
 
 		cleanUp();
@@ -57,7 +60,31 @@ public class Game {
 		coins = new ArrayList<Coin>(0);
 		removedCoins = new ArrayList<Coin>(0);
 		platforms = new ArrayList<Platform>(0);
-		platforms.add(new Platform(200, 100, 100, 10));
+		setUpPlatforms(5);
+	}
+
+	public static void setUpPlatforms(int num) {
+		int lastX = 0;
+		int lastW = 0;
+		Random random = new Random();
+		for (int i = 1; i < num + 1; i++) {
+			int x = random.nextInt(100) + lastX * i;
+			if (x - lastX >= 250)
+				x = lastX + 250;
+			if (x < lastX + lastW)
+				x = lastX + lastW;
+			int y = random.nextInt(50) + 57 * i;
+			int w = random.nextInt(80) + 10;
+			w = 80;
+			int h = 8;
+			platforms.add(new Platform(x, y, w, h));
+			// System.out.println("x:" + x);
+			// System.out.println("y:" + y);
+			// System.out.println("w:" + w);
+			// System.out.println("h:" + h);
+			lastX = x + 5;
+			lastW = w + 2;
+		}
 	}
 
 	private static void render() {
@@ -70,9 +97,10 @@ public class Game {
 		for (Platform p : platforms) {
 			p.draw();
 		}
-		
-		
+
 		player.draw();
+		
+		glTranslated(player.x - 100, 0, 0);
 	}
 
 	private static void update() {
@@ -87,9 +115,10 @@ public class Game {
 	private static void removeCoins() {
 		for (Coin c : removedCoins) {
 			coins.remove(c);
-			removedCoins.remove(c);
 		}
-
+		for (int i = 0; i < removedCoins.size(); i++) {
+			removedCoins.remove(i);
+		}
 	}
 
 	private static void drawScene() {
