@@ -15,14 +15,14 @@ public class Player {
 	public int jumpsLeft, score = 0;
 
 	private FloatBuffer fbV, fbC;
-
 	private VBO vbo;
+	public Platform standingOn;
 
 	int vboVertexHandle = glGenBuffers();
 	int vboColorHandle = glGenBuffers();
 
 	public Player() {
-		x = 100;
+		x = Game.xOff = 100;
 		y = 66;
 		h = 16;
 		w = h / 2;
@@ -44,10 +44,6 @@ public class Player {
 	public void update() {
 		x += xs;
 		y += ys;
-//		if (x > 650)
-//			x = -10;
-//		if (x < -10)
-//			x = 650;
 		ys -= .4;
 
 		if (dead) {
@@ -57,20 +53,27 @@ public class Player {
 			return;
 		}
 
+		Game.xOff = x - 200;
+		
 		if (ys < 0) { // is moving down
 			for (Platform p : Game.platforms) {
 				if (x > p.x && x < (p.x + p.w)) {
 					if ((y == p.y) || (y < (p.y + p.h) && y > p.y)) {
 						standing = true;
 						y = p.y + p.h;
+						p.landed();
+						standingOn = p;
 						break;
 					}
 				} else {
 					standing = false;
+					standingOn = null;
 				}
 			}
 		}
 
+		if(standingOn != null)
+		
 		if (y <= 32) {
 			standing = true;
 			y = 32;
@@ -81,9 +84,9 @@ public class Player {
 			jumpsLeft = 2;
 
 			if (!Keyboard.isKeyDown(Keyboard.KEY_LEFT) && xs < 0)
-				xs = xs * 0.9;
+				xs = xs * 0.4;
 			if (!Keyboard.isKeyDown(Keyboard.KEY_RIGHT) && xs > 0)
-				xs = xs * 0.9;
+				xs = xs * 0.4;
 		}
 
 		if (jumpPressed && !jumpWasPressed && jumpsLeft-- > 0) {
@@ -119,7 +122,8 @@ public class Player {
 	}
 
 	public void draw() {
-		vbo.render(vboVertexHandle, vboColorHandle, x, y);
+	//	vbo.render(vboVertexHandle, vboColorHandle, x, y);
+		vbo.staticRender(vboVertexHandle, vboColorHandle, x, y);
 	}
 
 	public void exit() {

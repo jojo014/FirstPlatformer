@@ -22,7 +22,7 @@ public class Game {
 	private static long lastFrame, lastFPS;
 	private static int fps, ups;
 
-	public static int xOff = 0;
+	public static double xOff = 0;
 
 	public static void loop() {
 		lastFPS = getTime();
@@ -60,7 +60,7 @@ public class Game {
 		coins = new ArrayList<Coin>(0);
 		removedCoins = new ArrayList<Coin>(0);
 		platforms = new ArrayList<Platform>(0);
-		setUpPlatforms(5);
+		setUpPlatforms(15);
 	}
 
 	public static void setUpPlatforms(int num) {
@@ -69,21 +69,21 @@ public class Game {
 		Random random = new Random();
 		for (int i = 1; i < num + 1; i++) {
 			int x = random.nextInt(100) + lastX * i;
-			if (x - lastX >= 250)
-				x = lastX + 250;
+			if (x - lastX >= 225)
+				x = lastX + 225;
 			if (x < lastX + lastW)
 				x = lastX + lastW;
-			int y = random.nextInt(50) + 57 * i;
+			int y = random.nextInt(45) + 57 * i;
 			int w = random.nextInt(80) + 10;
 			w = 80;
 			int h = 8;
 			platforms.add(new Platform(x, y, w, h));
-			// System.out.println("x:" + x);
-			// System.out.println("y:" + y);
-			// System.out.println("w:" + w);
-			// System.out.println("h:" + h);
 			lastX = x + 5;
 			lastW = w + 2;
+			if (i > 5) {
+				num -= 5;
+				i = 1;
+			}
 		}
 	}
 
@@ -99,8 +99,6 @@ public class Game {
 		}
 
 		player.draw();
-		
-		glTranslated(player.x - 100, 0, 0);
 	}
 
 	private static void update() {
@@ -122,6 +120,9 @@ public class Game {
 	}
 
 	private static void drawScene() {
+		glLoadIdentity();
+		glPushMatrix();
+
 		glBegin(GL_QUADS);
 		{
 			// sky
@@ -143,6 +144,8 @@ public class Game {
 			glVertex2d(0, 32);
 		}
 		glEnd();
+		glPopMatrix();
+		glTranslated(-xOff, 0, 0);
 	}
 
 	private static void setCamera() {

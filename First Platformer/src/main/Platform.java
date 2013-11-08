@@ -33,6 +33,10 @@ public class Platform {
 		vbo.setUp(fbV, vboVertexHandle, fbC, vboColorHandle);
 	}
 	
+	public void landed(){
+		
+	}
+	
 	public void draw(){
 		vbo.render(vboVertexHandle, vboColorHandle, x, y);
 	}

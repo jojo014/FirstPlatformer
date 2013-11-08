@@ -8,7 +8,6 @@ import static org.lwjgl.opengl.GL11.glColorPointer;
 import static org.lwjgl.opengl.GL11.glDisableClientState;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL11.glEnableClientState;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glTranslated;
@@ -39,7 +38,7 @@ public class VBO {
 	}
 
 	public void render(int vboVertexHandle, int vboColorHandle, double x, double y) {
-	//	glLoadIdentity();
+//		glLoadIdentity();
 		glPushMatrix();
 		glTranslated(x, y, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, vboVertexHandle);
@@ -56,6 +55,23 @@ public class VBO {
 
 		glPopMatrix();
 	}
+	public void staticRender(int vboVertexHandle, int vboColorHandle, double x, double y) {
+			glPushMatrix();
+			glTranslated(x, y, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, vboVertexHandle);
+			glVertexPointer(vertexSize, GL_FLOAT, 0, 0L);
+
+			glBindBuffer(GL_ARRAY_BUFFER, vboColorHandle);
+			glColorPointer(colorSize, GL_FLOAT, 0, 0L);
+
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_COLOR_ARRAY);
+			glDrawArrays(GL_QUADS, 0, amountOfVertices);
+			glDisableClientState(GL_COLOR_ARRAY);
+			glDisableClientState(GL_VERTEX_ARRAY);
+
+			glPopMatrix();
+		}
 
 	public void reDimInts(int amtOfVert, int vSize, int cSize) {
 		amountOfVertices = amtOfVert;
