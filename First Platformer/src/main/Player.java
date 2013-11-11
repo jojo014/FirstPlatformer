@@ -12,7 +12,8 @@ public class Player {
 
 	public double x, y, w, h, xs, ys;
 	public boolean jumpPressed, jumpWasPressed, dead, standing = false;;
-	public int jumpsLeft, score = 0;
+	public int jumpsLeft;
+	public static int score = 0;
 
 	private FloatBuffer fbV, fbC;
 	private VBO vbo;
@@ -54,7 +55,7 @@ public class Player {
 		}
 
 		Game.xOff = x - 200;
-		
+
 		if (ys < 0) { // is moving down
 			for (Platform p : Game.platforms) {
 				if (x > p.x && x < (p.x + p.w)) {
@@ -72,8 +73,9 @@ public class Player {
 			}
 		}
 
-		if(standingOn != null)
-		
+		if (standingOn != null) {
+		}
+
 		if (y <= 32) {
 			standing = true;
 			y = 32;
@@ -99,6 +101,13 @@ public class Player {
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
 			xs = Math.min(3, xs + 1);
 
+		for (Wall w : Game.walls) {
+			if (x >= w.x && x <= w.x + w.w) {
+				xs = 0;
+				x = w.x;
+			}
+		}
+
 		jumpWasPressed = jumpPressed;
 		jumpPressed = Keyboard.isKeyDown(Keyboard.KEY_UP);
 
@@ -122,7 +131,6 @@ public class Player {
 	}
 
 	public void draw() {
-	//	vbo.render(vboVertexHandle, vboColorHandle, x, y);
 		vbo.staticRender(vboVertexHandle, vboColorHandle, x, y);
 	}
 

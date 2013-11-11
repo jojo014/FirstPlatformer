@@ -18,6 +18,7 @@ public class Game {
 	public static ArrayList<Coin> coins;
 	public static ArrayList<Coin> removedCoins;
 	public static ArrayList<Platform> platforms;
+	public static ArrayList<Wall> walls;
 
 	private static long lastFrame, lastFPS;
 	private static int fps, ups;
@@ -61,6 +62,8 @@ public class Game {
 		removedCoins = new ArrayList<Coin>(0);
 		platforms = new ArrayList<Platform>(0);
 		setUpPlatforms(15);
+		walls = new ArrayList<Wall>(0);
+		setUpWalls();
 	}
 
 	public static void setUpPlatforms(int num) {
@@ -86,6 +89,16 @@ public class Game {
 			}
 		}
 	}
+	
+	public static void setUpWalls(){
+		int x, y, h;
+		int w = 8;
+		Random random = new Random();
+		x = random.nextInt(50);
+		y = random.nextInt() + 32;
+		h = random.nextInt(50);
+		walls.add(new Wall(x, y, w, h));
+	}
 
 	private static void render() {
 		setCamera();
@@ -96,6 +109,10 @@ public class Game {
 		}
 		for (Platform p : platforms) {
 			p.draw();
+		}
+		
+		for(Wall w : walls){
+			w.draw();
 		}
 
 		player.draw();
@@ -201,6 +218,9 @@ public class Game {
 		}
 		for (Platform p : platforms) {
 			p.exit();
+		}
+		for (Wall w : walls) {
+			w.exit();
 		}
 		Display.destroy();
 	}

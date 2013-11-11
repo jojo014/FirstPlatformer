@@ -42,10 +42,6 @@ public class Coin {
 			timer++;
 		x += xs;
 		y += ys;
-		if (x > 650)
-			x = -10;
-		if (x < -10)
-			x = 650;
 
 		if (Math.abs(ys) < .3)
 			ys = 0;
@@ -65,8 +61,8 @@ public class Coin {
 
 		if (Math.abs(x - Game.player.x) < 8 && Math.abs(y - Game.player.y) < 8) {
 			Game.removedCoins.add(this);
-			Game.player.score += 10;
-			System.out.println(Game.player.score);
+			Player.score += 10;
+			System.out.println(Player.score);
 		}
 	}
 

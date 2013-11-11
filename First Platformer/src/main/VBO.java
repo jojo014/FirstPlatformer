@@ -38,7 +38,6 @@ public class VBO {
 	}
 
 	public void render(int vboVertexHandle, int vboColorHandle, double x, double y) {
-//		glLoadIdentity();
 		glPushMatrix();
 		glTranslated(x, y, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, vboVertexHandle);
