@@ -101,10 +101,25 @@ public class Player {
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
 			xs = Math.min(3, xs + 1);
 
-		for (Wall w : Game.walls) {
-			if (x >= w.x && x <= w.x + w.w) {
-				xs = 0;
-				x = w.x;
+		if (xs > 0) {
+			for (Wall w : Game.walls) {
+				if (x + this.w > w.x && x + this.w < w.x + w.w) {
+					if (y <= w.h + 32) {
+						xs = 0;
+						x = w.x - this.w;
+					}
+				}
+			}
+		}
+
+		if (xs < 0) {
+			for (Wall w : Game.walls) {
+				if (x - this.w < w.x + w.w && x - this.w > w.x) {
+					if (y <= w.h + 32) {
+						xs = 0;
+						x = w.x + w.w + this.w;
+					}
+				}
 			}
 		}
 

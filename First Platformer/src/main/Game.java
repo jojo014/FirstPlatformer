@@ -89,14 +89,14 @@ public class Game {
 			}
 		}
 	}
-	
-	public static void setUpWalls(){
+
+	public static void setUpWalls() {
 		int x, y, h;
 		int w = 8;
 		Random random = new Random();
 		x = random.nextInt(50);
-		y = random.nextInt() + 32;
-		h = random.nextInt(50);
+		y = 32;
+		h = random.nextInt(100) + 25;
 		walls.add(new Wall(x, y, w, h));
 	}
 
@@ -110,8 +110,8 @@ public class Game {
 		for (Platform p : platforms) {
 			p.draw();
 		}
-		
-		for(Wall w : walls){
+
+		for (Wall w : walls) {
 			w.draw();
 		}
 
@@ -120,7 +120,7 @@ public class Game {
 
 	private static void update() {
 		player.update();
-		enemy.update();
+//		enemy.update();
 		for (Coin c : coins) {
 			c.update();
 		}

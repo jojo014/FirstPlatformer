@@ -26,7 +26,7 @@ public class Wall {
 		fbV.flip();
 
 		fbC = BufferUtils.createFloatBuffer(3 * 4);
-		fbC.put(new float[] { 0.1f, 0.1f, 1f, 0.1f, 0.1f, 1f, 0.1f, 0.1f, 1f, 0.1f, 0.1f, 1f });
+		fbC.put(new float[] { 1f, 0.3f, .2f, 1f, 0.3f, .2f, 1f, 0.3f, .2f, 1f, 0.3f, .2f});
 		fbC.flip();
 
 		vbo = new VBO();
